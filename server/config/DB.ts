@@ -11,6 +11,5 @@ export async function dbConnect(){
         
     } catch (error) {
         console.log(error);
-        
     }
 }
