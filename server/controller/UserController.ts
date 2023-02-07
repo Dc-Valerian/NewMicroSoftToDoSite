@@ -55,3 +55,26 @@ export const SingleGet = asyncHandler(
         })
     }
 )
+
+// to register a user
+export const RegisterUser = asyncHandler(
+    async(req:Request,res:Response,next:NextFunction):Promise<Response>=>{
+        const {email,password,name} = req.body;
+
+        const user = await UserModel.findOne({email});
+
+        if(user){
+            return res.status(HttpCode.OK).json({
+                message:"User already exist"
+            })
+        }else{
+            const registerUser = await UserModel.create({
+                name,email,password
+            });
+            return res.status(HttpCode.OK).json({
+                message:"User Successfully Registered",
+                data:registerUser,
+            })
+        }
+    }
+)
