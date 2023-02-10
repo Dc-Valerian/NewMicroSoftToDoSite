@@ -2,6 +2,7 @@ import { Request,Response,NextFunction } from "express";
 import UserModel from "../model/UserModel";
 import { asyncHandler } from "../utils/asyncHandler";
 import { AppError,HttpCode } from "../utils/AppError";
+import bcrypt from "bcrypt"
 
 // to get all user
 export const GetAllUser = asyncHandler(
@@ -61,6 +62,8 @@ export const RegisterUser = asyncHandler(
     async(req:Request,res:Response,next:NextFunction):Promise<Response>=>{
         const {email,password,name} = req.body;
 
+        // const salt :string = await
+
         const user = await UserModel.findOne({email});
 
         if(user){
@@ -76,5 +79,12 @@ export const RegisterUser = asyncHandler(
                 data:registerUser,
             })
         }
+    }
+)
+
+// TO LOGIN
+export const Loginuser = asyncHandler(
+    async(req:Request,res:Response,next:NextFunction):Promise<Response>=>{
+
     }
 )
