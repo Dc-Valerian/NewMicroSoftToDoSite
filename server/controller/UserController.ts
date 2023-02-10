@@ -85,6 +85,35 @@ export const RegisterUser = asyncHandler(
 // TO LOGIN
 export const Loginuser = asyncHandler(
     async(req:Request,res:Response,next:NextFunction):Promise<Response>=>{
+        const {email,password} = req.body;
 
+        if(!email || !password){
+            next(
+                new AppError({
+                    message:"Please Provide the valid Email or Password",
+                    httpCode:HttpCode.BAD_REQUEST,
+                })
+            )
+        }
+        const user = await UserModel.findOne({email})
+
+        if(!user){
+            next(
+                new AppError({
+                    message:"Couldn't Log  this user in",
+                    httpCode:HttpCode.FORBIDDEN,
+                })
+            )
+        }
+        const checkPass = await bcrypt.compare(password,user!.password)
+
+        if(!checkPass){
+            next(
+                new AppError({
+                    message:"Incorrect Password",
+                    httpCode:HttpCode.NOT_FOUND
+                })
+            )
+        }
     }
 )
