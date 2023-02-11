@@ -71,5 +71,37 @@ export const CreateTask = asyncHandler(
 export const CompleteTask = asyncHandler(
     async(req:Request,res:Response,next:NextFunction)=>{
         const getUser = await UserModel.findById(req.params.userID)
+
+        if(getUser){
+            const completed = await TaskModel.findByIdAndUpdate(
+                req.params.TaskID,
+                {
+                    status:true,
+                },
+                {
+                    new:true,
+                }
+            );
+            return res.status(200).json({
+                message:"Updated Successfully",
+                data:completed
+            });
+        }else{
+            return res.status(400).json({
+                message:"Access Denied"
+            })
+        }
+    }
+)
+
+export const unCompleteTask = asyncHandler(
+    async(req:Request,res:Response,next:NextFunction)=>{
+        const getUser = await UserModel.findById(req.params.userID)
+
+        if(getUser){
+            const completed = await TaskModel.findByIdAndUpdate(
+                req
+            )
+        }
     }
 )
