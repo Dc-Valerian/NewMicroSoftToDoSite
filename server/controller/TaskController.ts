@@ -146,3 +146,41 @@ export const UpdateTask = asyncHandler(
         }
     }
 )
+
+export const AssignTask =  async (req: Request, res: Response) => {
+	try {
+		const { email } = req.body;
+		const getUser = await UserModel.findOne({ email: email });
+		const getSender = await UserModel.findById(req.params.id);
+
+		if (getUser && getSender) {
+			const assignedData = await TaskModel.findById(req.params.taskID);
+			console.log(assignedData);
+			const userTask = await TaskModel.findByIdAndUpdate(
+				assignedData?._id,
+				{
+					sender: getSender?.name,
+					reciever: getUser?.name,
+				},
+				{
+					new: true,
+				},
+			);
+			getUser?.assigned?.push(assignedData?._id);
+			await getUser?.save();
+
+			return res.status(200).json({
+				message: "successFull",
+				data: userTask,
+			});
+		} else {
+			return res.status(404).json({
+				message: "user does not exist",
+			});
+		}
+	} catch (err) {
+		return res.status(404).json({
+			message: "an error occurred While Creating task",
+		});
+	}
+};
