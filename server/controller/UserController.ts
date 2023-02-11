@@ -115,5 +115,9 @@ export const Loginuser = asyncHandler(
                 })
             )
         }
+        return res.status(HttpCode.OK).json({
+            message:"Successfully got the user",
+            user
+        })
     }
 )
