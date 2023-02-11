@@ -1,4 +1,4 @@
-import { Request,Response,NextFunction } from "express";
+import { Request,Response,NextFunction, json } from "express";
 import mongoose from "mongoose";
 import TaskModel from "../model/TaskModel";
 import UserModel from "../model/UserModel";
@@ -100,8 +100,49 @@ export const unCompleteTask = asyncHandler(
 
         if(getUser){
             const completed = await TaskModel.findByIdAndUpdate(
-                req
-            )
+                req.params.TaskID,
+                {
+                    status:false,
+                },
+                {
+                    new:true,
+                }
+            );
+            return res.status(HttpCode.OK).json({
+                message:"Updated Successfully",
+                data:completed
+            })
+        }else{
+            return res.status(HttpCode.BAD_REQUEST).json({
+                message:"Access Denied"
+            })
+        }
+    }
+)
+
+export const UpdateTask = asyncHandler(
+    async(req:Request,res:Response,next:NextFunction)=>{
+        const {note,title} = req.body;
+
+        const completed = await TaskModel.findByIdAndUpdate(
+            req.params.id,
+            {
+                note:note,
+                title:title,
+            },
+            {
+                new:true,
+            }
+        )
+        if(completed){
+            next(
+                new AppError({
+                    message:"An Error Occured while updaating task",
+                    httpCode:HttpCode.BAD_REQUEST
+                }))
+                return res.status(HttpCode.CREATED).json({
+                    completed
+                })
         }
     }
 )
